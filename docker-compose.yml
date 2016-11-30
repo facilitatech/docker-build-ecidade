@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+  postgresql:
+    build: ./postgresql
+    ports:
+     - "5432:5432"
