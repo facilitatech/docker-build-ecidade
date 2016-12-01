@@ -20,6 +20,7 @@ LIGHT_GRAY='\033[0;37m'
 WHITE='\033[1;37m'
 NC='\033[0m'
 
+# Checando a instalação do postgres
 if which pg_dump > /dev/null; then
     
     printf "${ORANGE}Configurando PostgreSQL ... ${NC}\n"
@@ -27,6 +28,7 @@ if which pg_dump > /dev/null; then
     printf "${ORANGE}Removendo cluster ... ${NC}\n"
     pg_dropcluster --stop 9.2 main > /dev/null
 
+    # Corrigir a ordenação do encode no ISO-8859-1
     if [ ! -z "$( cat /usr/share/i18n/locales/pt_BR | grep reorder-after | awk '{ print $1 }' )" ]; then
         printf "${ORANGE}Arquivo /usr/share/i18n/locales/pt_BR já alterado ... ${NC}\n"
     else
@@ -36,8 +38,10 @@ if which pg_dump > /dev/null; then
         sed -i "51a reorder-end" /usr/share/i18n/locales/pt_BR
     fi
 
+    # Redefinir o locale
     localedef -i pt_BR -c -f ISO-8859-1 -A /usr/share/locale/locale.alias pt_BR
 
+    # regerar o locale alterado e reconfigurar o sistema para fazer uso dele:
     locale-gen pt_BR
     dpkg-reconfigure locales
     export LC_ALL=pt_BR
@@ -55,15 +59,17 @@ if which pg_dump > /dev/null; then
     printf "${ORANGE}Iniciando servidor ... ${NC}\n"
     /etc/init.d/postgresql start
 
+    # Configurando o arquivo postgresql.conf com as diretivas necessárias
     printf "${ORANGE}Configurando o arquivo /etc/postgresql/9.2/main/postgresql.conf ... ${NC}\n"
     sed -i -e "s/max_connections = 100/max_connections = 30/g" /etc/postgresql/9.2/main/postgresql.conf
     sed -i "58a listen_addresses = '*'" /etc/postgresql/9.2/main/postgresql.conf
     sed -i "491a bytea_output = 'escape'" /etc/postgresql/9.2/main/postgresql.conf
-    sed -i "533a max_locks_per_transaction = 200" /etc/postgresql/9.2/main/postgresql.conf
+    sed -i "533a max_locks_per_transaction = 256" /etc/postgresql/9.2/main/postgresql.conf
     sed -i "550a default_with_oids = on" /etc/postgresql/9.2/main/postgresql.conf
     sed -i "551a escape_string_warning = off" /etc/postgresql/9.2/main/postgresql.conf
     sed -i "555a standard_conforming_strings = off" /etc/postgresql/9.2/main/postgresql.conf
 
+    # Configurando o arquivo pg_hba.conf com as diretivas de segurança e permissão de acesso ao banco
     printf "${ORANGE}Configurando o arquivo /etc/postgresql/9.2/main/pg_hba.conf ... ${NC}\n"
     sed -i -e "s/peer/trust/g" /etc/postgresql/9.2/main/pg_hba.conf
     sed -i -e "s/md5/trust/g" /etc/postgresql/9.2/main/pg_hba.conf
@@ -73,65 +79,12 @@ if which pg_dump > /dev/null; then
 
     printf "${ORANGE}Criando ROLE'S ... ${NC}\n"
     /usr/bin/psql -U postgres -c "CREATE ROLE ecidade WITH SUPERUSER LOGIN PASSWORD 'ecidade';"
-    /usr/bin/psql -U postgres -c "CREATE ROLE dbseller WITH SUPERUSER LOGIN PASSWORD 'dbseller';"
     /usr/bin/psql -U postgres -c "CREATE ROLE plugin WITH SUPERUSER LOGIN PASSWORD 'plugin';"
     /usr/bin/psql -U postgres -c "CREATE DATABASE ecidade OWNER ecidade;"
 
+    printf "${ORANGE}Stop no PostgreSQL ... ${NC}\n"
+    /etc/init.d/postgresql stop
 fi
 
-wait $!
-
-
-# DATADIR="/var/lib/postgresql/9.5/main/"
-# CONF="/etc/postgresql/9.5/main/postgresql.conf"
-# POSTGRES="/usr/lib/postgresql/9.5/bin/postgres"
-
-# if [ ! -d "/etc/postgresql/9.5/main/" ]; then
-
-#     pg_createcluster 9.5 main
-
-#     pass=postgres
-#     authMethod=trust
-
-#     { echo; echo "host  all all 0.0.0.0/0 trust"; } > "/etc/postgresql/9.5/main/pg_hba.conf"
-#     { echo; echo "local all all trust"; } >> "/etc/postgresql/9.5/main/pg_hba.conf"
-#     { echo; echo "host  all all 127.0.0.1/32 trust"; } >> "/etc/postgresql/9.5/main/pg_hba.conf"
-#     { echo; echo "host  all all ::1/128 trust"; } >> "/etc/postgresql/9.5/main/pg_hba.conf"
-
-#     sed -i "/^#listen_addresses/i listen_addresses='*'" /etc/postgresql/9.5/main/postgresql.conf
-#     sed -i "/^max_connections = 100/i max_connections = 200" /etc/postgresql/9.5/main/postgresql.conf
-#     sed -i '66s/max_connections = 100/ /g' /etc/postgresql/9.5/main/postgresql.conf
-
-#     mkdir -p /var/run/postgresql/9.5-main.pg_stat_tmp/
-#     touch /var/run/postgresql/9.5-main.pg_stat_tmp/global.tmp
-#     chown postgres:postgres /var/run/postgresql/ -R
-
-#     su postgres --command "$POSTGRES -D $DATADIR -c config_file=$CONF " 2>&1 &
-# fi
-
-# : ${POSTGRES_USER:=postgres}
-# : ${POSTGRES_DB:=$POSTGRES_USER}
-# export POSTGRES_USER POSTGRES_DB
-
-# if [ "$POSTGRES_DB" != 'postgres' ]; then
-#     psql --username postgres -c "CREATE DATABASE $POSTGRES_DB;"
-#     echo
-# fi
-
-# if [ "$POSTGRES_USER" = 'postgres' ]; then
-#     op='ALTER'
-# else
-#     op='CREATE'
-# fi
-
-# psql --username postgres -c "$op USER "$POSTGRES_USER" WITH SUPERUSER PASSWORD '$pass' ;"
-# echo
-
-# psql --username postgres --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker' ;"
-# echo
-
-# psql --username postgres -c "CREATE DATABASE docker TEMPLATE template0 ENCODING = 'UTF8' ;"
-# echo
-
-
-
+printf "${ORANGE}Executando supervisord ... ${NC}\n"
+/usr/local/bin/supervisord -n -c /etc/supervisord.conf
