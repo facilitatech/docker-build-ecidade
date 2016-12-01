@@ -3,5 +3,13 @@ version: '2'
 services:
   postgresql:
     build: ./postgresql
+    volumes:
+     - ./:/var/www
     ports:
      - "5432:5432"
+  apache:
+    build: ./apache
+    volumes:
+     - ./:/var/www
+    ports:
+     - "80:80"
