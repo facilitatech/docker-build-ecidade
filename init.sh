@@ -42,17 +42,36 @@ if [ $ENVIRONMENT == 'LINUX' ]; then
         printf "${GREEN}"
         figlet e-cidade
     else
-        if apt-get > /dev/null; then
+        if which apt-get > /dev/null; then
             apt-get install -y figlet > /dev/null;
         fi
-        if yum > /dev/null; then
+        if which yum > /dev/null; then
             yum install -y figlet > /dev/null;
         fi
-        printf "${GREEN}"
-        figlet e-cidade
+        if which figlet > /dev/null; then
+            printf "${GREEN}"
+            figlet e-cidade
+        fi
     fi
     echo ' '
     printf "${NC}"
+fi
+
+# Arquivo de configuração com o caminho para download do e-cidade
+source config.sh;
+
+if [[ ($database == 0) && ($sourcecode == 0 || $sourcecode == "") ]]; then
+    printf "${BLUE}Configure o arquivo config.sh com os caminhos dos fontes e base do e-cidade para download${NC}\n"
+    exit 2;
+fi
+
+# Copiando os arquivos para os diretórios onde será feito o build de cada container
+cp config.sh postgresql
+cp config.sh apache
+
+if which docker-compose > /dev/null; then
+    printf "${BLUE}Instalação do docker-compose não encontrada${NC}\n"
+    exit 2
 fi
 
 # Docker
