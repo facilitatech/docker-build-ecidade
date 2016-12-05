@@ -112,10 +112,10 @@ if [[ ($database == 0) && ($sourcecode != 0 || $sourcecode != "") ]]; then
     /usr/bin/psql -U postgres -d ecidade -c "SELECT public.fc_grant_revoke('grant', 'plugin', 'select', '%', '%');"
     /usr/bin/psql -U postgres -d ecidade -c "SELECT * FROM public.fc_set_pg_search_path();"
 
-    if [ -d "/var/www/e-cidade-$versao.sql"]; then
+    if [ -d "/var/www/e-cidade-$versao.sql" ]; then
         rm -rf /var/www/e-cidade-$versao.sql
     fi
-    if [ -d "./e-cidade"]; then
+    if [ -d "./ecidade" ]; then
         rm -rf ./ecidade
     fi
 else

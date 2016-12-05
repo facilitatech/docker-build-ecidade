@@ -294,7 +294,7 @@ if [[ ($sourcecode != 0 && $sourcecode != "") ]]; then
 	cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidade /var/www
 	cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidadeonline /var/www
 	
-    if [ -d "./e-cidade"]; then
+    if [ -d "./ecidade" ]; then
         rm -rf ./ecidade
     fi
 else
