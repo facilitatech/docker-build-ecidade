@@ -42,6 +42,9 @@ RUN chmod 775 /build.sh
 ADD config.sh /config.sh
 RUN chmod 775 /config.sh
 
+RUN echo "<?php " > /var/www/index.php
+RUN echo "header('Location: e-cidade');" >> /var/www/index.php
+
 CMD ["./build.sh"]
 
 EXPOSE 80

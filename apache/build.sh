@@ -64,7 +64,7 @@ EOF
 
 	# Configurações no apache para tempo de execução, limite de requisições
 	# Configuração de charset.
-	if [ -z "$( cat /etc/apache2/apache2.conf | grep '12000' )" ]; then
+	if [ -n "$( cat /etc/apache2/apache2.conf | grep 'Timeout 300' )" ]; then
 		printf "${ORANGE}Alterando /etc/apache2/apache2.conf para opção Timeout ... ${NC}\n"
 		sed -i -e "s/Timeout 300/Timeout 12000/g" /etc/apache2/apache2.conf
 	else
@@ -85,7 +85,7 @@ EOF
 		printf "${ORANGE}Arquivo /etc/apache2/apache2.conf já alterado para a opção LimitRequestFieldSize ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/apache2/conf-available/charset.conf | grep 'ISO-8859-1' )" ]; then
+	if [ -z "$( cat /etc/apache2/conf.d/charset | grep 'ISO-8859-1' )" ]; then
 		printf "${ORANGE}Alterando /etc/apache2/conf-available/charset.conf para opção AddDefaultCharset ... ${NC}\n"
 		echo "AddDefaultCharset ISO-8859-1" >> /etc/apache2/conf-available/charset.conf
 	else
@@ -155,42 +155,42 @@ if which php > /dev/null; then
 	# log_errors = on
 	# error_log = /var/www/log/php-scripts.log
 	# session.gc_maxlifetime = 7200
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'register_globals = Off' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'register_globals = Off' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção register_globals = On ... ${NC}\n"
 		sed -i -e "s/register_globals = Off/register_globals = On/g" /etc/php5/apache2/php.ini
 	else
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção register_globals = On ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'register_long_arrays = Off' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'register_long_arrays = Off' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção register_long_arrays = On ... ${NC}\n"
 		sed -i -e "s/register_long_arrays = Off/register_long_arrays = On/g" /etc/php5/apache2/php.ini
 	else
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção register_long_arrays = On ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'register_argc_argv = Off' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'register_argc_argv = Off' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção register_argc_argv = On ... ${NC}\n"
 		sed -i -e "s/register_argc_argv = Off/register_argc_argv = On/g" /etc/php5/apache2/php.ini
 	else
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção register_argc_argv = On ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'post_max_size = 8M' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'post_max_size = 8M' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção post_max_size = 64M ... ${NC}\n"
 		sed -i -e "s/post_max_size = 8M/post_max_size = 64M/g" /etc/php5/apache2/php.ini
 	else
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção post_max_size = 64M ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'magic_quotes_gpc = Off' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'magic_quotes_gpc = Off' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção magic_quotes_gpc = On ... ${NC}\n"
 		sed -i -e "s/magic_quotes_gpc = Off/magic_quotes_gpc = On/g" /etc/php5/apache2/php.ini
 	else
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção magic_quotes_gpc = On ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'upload_max_filesize = 2M' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'upload_max_filesize = 2M' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção upload_max_filesize = 64M ... ${NC}\n"
 		sed -i -e "s/upload_max_filesize = 2M/upload_max_filesize = 64M/g" /etc/php5/apache2/php.ini
 	else
@@ -211,21 +211,21 @@ if which php > /dev/null; then
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção max_input_time = 60000 ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'memory_limit = 128M' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'memory_limit = 128M' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção memory_limit = 512M ... ${NC}\n"
 		sed -i -e "s/memory_limit = 128M/memory_limit = 512M/g" /etc/php5/apache2/php.ini
 	else
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção memory_limit = 512M ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'allow_call_time_pass_reference = Off' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'allow_call_time_pass_reference = Off' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção allow_call_time_pass_reference = On ... ${NC}\n"
 		sed -i -e "s/allow_call_time_pass_reference = Off/allow_call_time_pass_reference = On/g" /etc/php5/apache2/php.ini
 	else
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção allow_call_time_pass_reference = On ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'error_reporting = E_ALL & ~E_DEPRECATED' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'error_reporting = E_ALL & ~E_DEPRECATED' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção error_reporting = E_ALL & ~E_NOTICE ... ${NC}\n"
 		sed -i '521s/error_reporting = E_ALL & ~E_DEPRECATED/ /g' /etc/php5/apache2/php.ini
 		sed -i '521a error_reporting = E_ALL & ~E_NOTICE' /etc/php5/apache2/php.ini
@@ -233,14 +233,14 @@ if which php > /dev/null; then
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção error_reporting = E_ALL & ~E_NOTICE ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'display_errors = On' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'display_errors = On' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção display_errors = Off ... ${NC}\n"
 		sed -i -e "s/display_errors = On/display_errors = Off/g" /etc/php5/apache2/php.ini
 	else
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção display_errors = Off ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'log_errors = Off' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'log_errors = Off' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção log_errors = On ... ${NC}\n"
 		sed -i -e "s/log_errors = Off/log_errors = On/g" /etc/php5/apache2/php.ini
 	else
@@ -248,13 +248,13 @@ if which php > /dev/null; then
 	fi
 
 	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'error_log = /var/www/log/php-scripts.log' )" ]; then
-		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção error_log = /var/www/log/php-scripts.log ... ${NC}\n"
-	else
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção error_log = /var/www/log/php-scripts.log ... ${NC}\n"
-		sed -i '646a error_log = /var/www/log/php-scripts.log' /etc/php5/apache2/php.ini	
+		sed -i '646a error_log = /var/www/log/php-scripts.log' /etc/php5/apache2/php.ini
+	else
+		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção error_log = /var/www/log/php-scripts.log ... ${NC}\n"
 	fi
 
-	if [ -z "$( cat /etc/php5/apache2/php.ini | grep 'session.gc_maxlifetime = 1440' )" ]; then
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'session.gc_maxlifetime = 1440' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção session.gc_maxlifetime = 7200 ... ${NC}\n"
 		sed -i -e "s/session.gc_maxlifetime = 1440/session.gc_maxlifetime = 7200/g" /etc/php5/apache2/php.ini
 	else
@@ -267,21 +267,21 @@ fi
 
 # Configurando integração com LibreOffice
 if [ -z "$( cat /etc/rc.local | grep '/usr/bin/soffice' )" ]; then
-	printf "${ORANGE}Arquivo /etc/rc.local já alterado para a opção /usr/bin/soffice -accept=socket,host=localhost,port=8100;urp; -nofirststartwizard -headless & ... ${NC}\n"
-else
 	printf "${ORANGE}Alterando /etc/rc.local para opção /usr/bin/soffice -accept=socket,host=localhost,port=8100;urp; -nofirststartwizard -headless & ... ${NC}\n"
 	sed -i '13a /usr/bin/soffice -accept="socket,host=localhost,port=8100;urp;" -nofirststartwizard -headless &' /etc/rc.local
+else
+	printf "${ORANGE}Arquivo /etc/rc.local já alterado para a opção /usr/bin/soffice -accept=socket,host=localhost,port=8100;urp; -nofirststartwizard -headless & ... ${NC}\n"
 fi
 
 # Configuração as permissões de criação de arquivos
 if [ -z "$( cat /etc/login.defs | grep '#CHANGEFORTOTALBR' )" ]; then
-	printf "${ORANGE}Arquivo /etc/login.defs já alterado para a opção UMASK 002 ... ${NC}\n"
-else
 	printf "${ORANGE}Alterando /etc/login.defs para opção UMASK 002 ... ${NC}\n"
 	sed -i '151s/UMASK/ /g' /etc/login.defs
 	sed -i '151s/002/ /g' /etc/login.defs
 	sed -i '151a UMASK 002' /etc/login.defs
 	sed -i '152a #CHANGEFORTOTALBR' /etc/login.defs
+else
+	printf "${ORANGE}Arquivo /etc/login.defs já alterado para a opção UMASK 002 ... ${NC}\n"
 fi
 
 # Efetuando o download dos fontes do e-cidade
