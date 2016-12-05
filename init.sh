@@ -75,6 +75,19 @@ if ! which docker-compose > /dev/null; then
     exit 2
 fi
 
+# Limpando os arquivos da ultima instalação
+if [ -f "./e-cidade-$versao.sql" ]; then
+    rm -rf ./e-cidade-$versao.sql
+fi
+
+if [ -d "./e-cidade" ]; then
+    rm -rf ./e-cidade
+fi
+
+if [ -d "./e-cidadeonline" ]; then
+    rm -rf ./e-cidadeonline
+fi
+
 # Docker
 if which docker > /dev/null; then
     printf "${ORANGE}DOCKER${NC}\n"
