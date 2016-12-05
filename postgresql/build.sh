@@ -90,22 +90,28 @@ if which pg_dump > /dev/null; then
     /usr/bin/psql -U postgres -c "CREATE ROLE dbseller WITH SUPERUSER LOGIN PASSWORD '12345';"
     /usr/bin/psql -U postgres -c "CREATE DATABASE ecidade OWNER ecidade;"
     /usr/bin/psql -U postgres -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '12345'"
-    /usr/bin/psql -U postgres -d ecidade -c "CREATE SCHEMA plugins"
-    /usr/bin/psql -U postgres -d ecidade -c "GRANT ALL ON SCHEMA plugins TO plugin;"
-    /usr/bin/psql -U postgres -d ecidade -c "SELECT public.fc_grant_revoke('grant', 'plugin', 'select', '%', '%');"
-    /usr/bin/psql -U postgres -d ecidade -c "SELECT * FROM fc_set_pg_search_path();"
 
     printf "${ORANGE}Stop no PostgreSQL ... ${NC}\n"
-    /etc/init.d/postgresql stop
+    /etc/init.d/postgresql restart
 fi
 
 source /config.sh
 
 if [[ ($database == 0) && ($sourcecode != 0 || $sourcecode != "") ]]; then
+
+    printf "${ORANGE}Download dos fontes para obter base de dados ... ${NC}\n"
     mkdir -p ./ecidade
     wget -qO- $sourcecode | tar xjv -C ./ecidade > /dev/null;
     cp -r ./ecidade/e-cidade-$versao-linux.completo/sql/e-cidade-$versao.sql /var/www
+
+    printf "${ORANGE}Restaurando base de dados ... ${NC}\n"
     /usr/bin/psql -U postgres -d ecidade -f /var/www/e-cidade-$versao.sql
+
+    /usr/bin/psql -U postgres -d ecidade -c "CREATE SCHEMA plugins"
+    /usr/bin/psql -U postgres -d ecidade -c "GRANT ALL ON SCHEMA plugins TO plugin;"
+    /usr/bin/psql -U postgres -d ecidade -c "SELECT public.fc_grant_revoke('grant', 'plugin', 'select', '%', '%');"
+    /usr/bin/psql -U postgres -d ecidade -c "SELECT * FROM public.fc_set_pg_search_path();"
+
     if [ -d "/var/www/e-cidade-$versao.sql"]; then
         rm -rf /var/www/e-cidade-$versao.sql
     fi
@@ -113,9 +119,12 @@ if [[ ($database == 0) && ($sourcecode != 0 || $sourcecode != "") ]]; then
         rm -rf ./ecidade
     fi
 else
+    printf "${ORANGE}Download da base de dados ... ${NC}\n"
     mkdir -p ./ecidade
     wget -qO- $database | xjv -C ./ecidade
 fi
+
+/etc/init.d/postgresql stop
 
 printf "${ORANGE}Executando supervisord ... ${NC}\n"
 /usr/local/bin/supervisord -n -c /etc/supervisord.conf
