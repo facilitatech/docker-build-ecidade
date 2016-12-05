@@ -162,6 +162,13 @@ if which php > /dev/null; then
 		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção register_globals = On ... ${NC}\n"
 	fi
 
+	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'max_execution_time = 30' )" ]; then
+		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção max_execution_time = 60000 ... ${NC}\n"
+		sed -i -e "s/max_execution_time = 30/max_execution_time = 60000/g" /etc/php5/apache2/php.ini
+	else
+		printf "${ORANGE}Arquivo /etc/php5/apache2/php.ini já alterado para a opção max_execution_time = 60000 ... ${NC}\n"
+	fi
+
 	if [ -n "$( cat /etc/php5/apache2/php.ini | grep 'register_long_arrays = Off' )" ]; then
 		printf "${ORANGE}Alterando /etc/php5/apache2/php.ini para opção register_long_arrays = On ... ${NC}\n"
 		sed -i -e "s/register_long_arrays = Off/register_long_arrays = On/g" /etc/php5/apache2/php.ini
@@ -294,6 +301,9 @@ if [[ ($sourcecode != 0 && $sourcecode != "") ]]; then
 	cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidade /var/www
 	cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidadeonline /var/www
 	
+	mkdir -p /var/www/e-cidade/tmp
+	chmod 777 /var/www/e-cidade/tmp -R
+
     if [ -d "./ecidade" ]; then
         rm -rf ./ecidade
     fi
