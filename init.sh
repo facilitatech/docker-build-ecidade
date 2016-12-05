@@ -69,8 +69,9 @@ fi
 cp config.sh postgresql
 cp config.sh apache
 
-if which docker-compose > /dev/null; then
+if ! which docker-compose > /dev/null; then
     printf "${BLUE}Instalação do docker-compose não encontrada${NC}\n"
+    printf "${BLUE}Encontre mais detalhes em: https://docs.docker.com/compose/install/ ${NC}\n"
     exit 2
 fi
 
