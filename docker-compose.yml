@@ -15,7 +15,5 @@ services:
     container_name: apache
     volumes:
      - ./:/var/www
-    depends_on:
-     - postgresql
     ports:
      - "80:80"
