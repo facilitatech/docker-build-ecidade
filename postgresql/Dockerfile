@@ -58,6 +58,8 @@ ADD supervisord.conf /etc/supervisord.conf
 # Adicionando shell com as configurações do postgres, criação de cluster, postgresql.conf, pg_hba.conf, etc ...
 ADD build.sh /build.sh
 RUN chmod 775 /build.sh
+ADD config.sh /config.sh
+RUN chmod 775 /config.sh
 
 CMD ["./build.sh"]
 

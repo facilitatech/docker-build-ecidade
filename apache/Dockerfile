@@ -18,6 +18,7 @@ RUN apt-get install -y \
     iftop \
     atop \
     wget \
+    bzip2 \
     language-pack-en-base
 
 RUN apt-get install apache2 apache2-utils apache2-dev -y
@@ -38,6 +39,8 @@ ADD supervisord.conf /etc/supervisord.conf
 # Adicionando shell com as configurações do php, php.ini, logs, etc ...
 ADD build.sh /build.sh
 RUN chmod 775 /build.sh
+ADD config.sh /config.sh
+RUN chmod 775 /config.sh
 
 CMD ["./build.sh"]
 
