@@ -290,7 +290,7 @@ source /config.sh
 if [[ ($sourcecode != 0 && $sourcecode != "") ]]; then
 	mkdir -p ./ecidade
 	wget $sourcecode -P ./ecidade > /dev/null;
-	tar xjvf ./ecidade/e-cidade-$versao-linux.completo.tar.bz2
+	tar xjvf ./ecidade/e-cidade-$versao-linux.completo.tar.bz2 -C ./ecidade
 	cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidade /var/www
 	cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidadeonline /var/www
 	
