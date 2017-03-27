@@ -294,22 +294,24 @@ fi
 # Efetuando o download dos fontes do e-cidade
 source /config.sh
 
-if [[ ($sourcecode != 0 && $sourcecode != "") ]]; then
-	mkdir -p ./ecidade
-	wget $sourcecode -P ./ecidade > /dev/null;
-	tar xjvf ./ecidade/e-cidade-$versao-linux.completo.tar.bz2 -C ./ecidade
-	cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidade /var/www
-	cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidadeonline /var/www
+if [ $disable == 0 ]; then
+	if [[ ($sourcecode != 0 && $sourcecode != "") ]]; then
+		mkdir -p ./ecidade
+		wget $sourcecode -P ./ecidade > /dev/null;
+		tar xjvf ./ecidade/e-cidade-$versao-linux.completo.tar.bz2 -C ./ecidade
+		cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidade /var/www
+		cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidadeonline /var/www
 	
-	mkdir -p /var/www/e-cidade/tmp
-	chmod 777 /var/www/e-cidade/tmp -R
+		mkdir -p /var/www/e-cidade/tmp
+		chmod 777 /var/www/e-cidade/tmp -R
 
-    if [ -d "./ecidade" ]; then
-        rm -rf ./ecidade
-    fi
-else
-	printf "${BLUE}Configure o arquivo config.sh com os caminhos dos fontes e base do e-cidade para download${NC}\n"
-    exit 2;
+    		if [ -d "./ecidade" ]; then
+        		rm -rf ./ecidade
+    		fi
+	else
+		printf "${BLUE}Configure o arquivo config.sh com os caminhos dos fontes e base do e-cidade para download${NC}\n"
+   		 exit 2;
+	fi
 fi
 
 printf "${ORANGE}Executando supervisord ... ${NC}\n"

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Desabilitado por default o download do fontes do ecidade
+disable=1
+
 # link do pacote disponibilizado no portal do software público
 sourcecode=0
 

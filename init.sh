@@ -60,9 +60,11 @@ fi
 # Arquivo de configuração com o caminho para download do e-cidade
 source config.sh;
 
-if [[ ($database == 0) && ($sourcecode == 0 || $sourcecode == "") ]]; then
-    printf "${BLUE}Configure o arquivo config.sh com os caminhos dos fontes e base do e-cidade para download${NC}\n"
-    exit 2;
+if [ $disable == 0 ]; then
+	if [[ ($database == 0) && ($sourcecode == 0 || $sourcecode == "") ]]; then
+    		printf "${BLUE}Configure o arquivo config.sh com os caminhos dos fontes e base do e-cidade para download${NC}\n"
+    		exit 2;
+	fi
 fi
 
 # Copiando os arquivos para os diretórios onde será feito o build de cada container

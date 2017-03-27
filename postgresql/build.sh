@@ -97,31 +97,33 @@ fi
 
 source /config.sh
 
-if [[ ($database == 0) && ($sourcecode != 0 || $sourcecode != "") ]]; then
+if [ $disable == 0 ]; then
+	if [[ ($database == 0) && ($sourcecode != 0 || $sourcecode != "") ]]; then
 
-    printf "${ORANGE}Download dos fontes para obter base de dados ... ${NC}\n"
-    mkdir -p ./ecidade
-    wget -qO- $sourcecode | tar xjv -C ./ecidade > /dev/null;
-    cp -r ./ecidade/e-cidade-$versao-linux.completo/sql/e-cidade-$versao.sql /var/www
+    		printf "${ORANGE}Download dos fontes para obter base de dados ... ${NC}\n"
+   	 	mkdir -p ./ecidade
+    		wget -qO- $sourcecode | tar xjv -C ./ecidade > /dev/null;
+    		cp -r ./ecidade/e-cidade-$versao-linux.completo/sql/e-cidade-$versao.sql /var/www
 
-    printf "${ORANGE}Restaurando base de dados ... ${NC}\n"
-    /usr/bin/psql -U postgres -d ecidade -f /var/www/e-cidade-$versao.sql
+    		printf "${ORANGE}Restaurando base de dados ... ${NC}\n"
+    		/usr/bin/psql -U postgres -d ecidade -f /var/www/e-cidade-$versao.sql
 
-    /usr/bin/psql -U postgres -d ecidade -c "CREATE SCHEMA plugins"
-    /usr/bin/psql -U postgres -d ecidade -c "GRANT ALL ON SCHEMA plugins TO plugin;"
-    /usr/bin/psql -U postgres -d ecidade -c "SELECT public.fc_grant_revoke('grant', 'plugin', 'select', '%', '%');"
-    /usr/bin/psql -U postgres -d ecidade -c "SELECT * FROM public.fc_set_pg_search_path();"
+    		/usr/bin/psql -U postgres -d ecidade -c "CREATE SCHEMA plugins"
+    		/usr/bin/psql -U postgres -d ecidade -c "GRANT ALL ON SCHEMA plugins TO plugin;"
+    		/usr/bin/psql -U postgres -d ecidade -c "SELECT public.fc_grant_revoke('grant', 'plugin', 'select', '%', '%');"
+    		/usr/bin/psql -U postgres -d ecidade -c "SELECT * FROM public.fc_set_pg_search_path();"
 
-    if [ -d "/var/www/e-cidade-$versao.sql" ]; then
-        rm -rf /var/www/e-cidade-$versao.sql
-    fi
-    if [ -d "./ecidade" ]; then
-        rm -rf ./ecidade
-    fi
-else
-    printf "${ORANGE}Download da base de dados ... ${NC}\n"
-    mkdir -p ./ecidade
-    wget -qO- $database | xjv -C ./ecidade
+    		if [ -d "/var/www/e-cidade-$versao.sql" ]; then
+        		rm -rf /var/www/e-cidade-$versao.sql
+    		fi
+    		if [ -d "./ecidade" ]; then
+        		rm -rf ./ecidade
+    		fi
+	else
+    		printf "${ORANGE}Download da base de dados ... ${NC}\n"
+    		mkdir -p ./ecidade
+    		wget -qO- $database | xjv -C ./ecidade
+	fi
 fi
 
 /etc/init.d/postgresql stop
