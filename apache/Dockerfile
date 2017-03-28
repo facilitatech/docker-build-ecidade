@@ -27,6 +27,8 @@ RUN apt-get install php5 php5-gd php5-pgsql php5-cli php5-mhash php5-mcrypt -y
 
 RUN apt-get install libreoffice-writer python-uno openjdk-6-jre -y
 
+RUN a2enmod rewrite
+
 # Install supervisor
 RUN easy_install supervisor && \
     mkdir -p /var/log/supervisor && \
