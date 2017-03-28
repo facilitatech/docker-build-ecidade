@@ -9,7 +9,7 @@ services:
     links:
      - apache
     ports:
-     - "5432:5432"
+     - "5433:5432"
   apache:
     build: ./apache
     container_name: apache

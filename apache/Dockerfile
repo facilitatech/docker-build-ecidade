@@ -19,6 +19,8 @@ RUN apt-get install -y \
     atop \
     wget \
     bzip2 \
+    vim \
+    telnet \
     language-pack-en-base
 
 RUN apt-get install apache2 apache2-utils apache2-dev -y
