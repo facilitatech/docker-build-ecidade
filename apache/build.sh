@@ -34,9 +34,7 @@ if which apache2 > /dev/null; then
 	printf "${ORANGE}Configurando Apache2 ... ${NC}\n"
 
 		# Configurando virtual host
-		cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf.dist
-
-		cat <<EOF > /etc/apache2/sites-available/000-default.conf
+		cat <<EOF > /etc/apache2/sites-available/default
 <VirtualHost *:80>
 	ServerAdmin webmaster@localhost
 
