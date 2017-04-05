@@ -18,8 +18,12 @@ Copyright (c) TotalBR Tecnologia ME LTDA
 (http://tbrtecnologia.com.br/)
 
 DOCKER
-Gerar novos containers?   [ 1 ]
-Remover todos containers? [ 2 ]
-Iniciar novo build?       [ 3 ]
+Gerar novos containers?        [ 1 ]
+Remover todos containers?      [ 2 ]
+Iniciar novo build?            [ 3 ]
+Iniciar todos os Containers?   [ 4 ]
+Parar todos os containers?     [ 5 ]
+Reiniciar todos os containers? [ 6 ]
+
 
 ```

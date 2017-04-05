@@ -93,7 +93,7 @@ fi
 # Docker
 if which docker > /dev/null; then
     printf "${ORANGE}DOCKER${NC}\n"
-    printf "${LIGHT_PURPLE}Gerar novos containers?${NC} ${WHITE}  [ ${PURPLE}1 ${WHITE}]${NC} \n${LIGHT_PURPLE}Remover todos containers?${NC} ${WHITE}[ ${PURPLE}2 ${WHITE}]${NC} \n${LIGHT_PURPLE}Iniciar novo build?${NC} ${WHITE}      [ ${PURPLE}3 ${WHITE}]${NC}\n"
+    printf "${LIGHT_PURPLE}Gerar novos containers?${NC} ${WHITE}       [ ${PURPLE}1 ${WHITE}]${NC} \n${LIGHT_PURPLE}Remover todos containers?${NC} ${WHITE}     [ ${PURPLE}2 ${WHITE}]${NC} \n${LIGHT_PURPLE}Iniciar novo build?${NC} ${WHITE}           [ ${PURPLE}3 ${WHITE}]${NC}\n${LIGHT_PURPLE}Iniciar todos os Containers?${NC} ${WHITE}  [ ${PURPLE}4 ${WHITE}]${NC}\n${LIGHT_PURPLE}Parar todos os containers?${NC} ${WHITE}    [ ${PURPLE}5 ${WHITE}]${NC}\n${LIGHT_PURPLE}Reiniciar todos os containers?${NC} ${WHITE}[ ${PURPLE}6 ${WHITE}]${NC}\n"
     read gerar
 
     if [ -n "$gerar" ]; then
@@ -123,6 +123,18 @@ if which docker > /dev/null; then
         	else
         	    docker-compose build
         	fi
+        fi
+	if [ $gerar == '4' ]; then
+            printf "${ORANGE}Iniciando todos containers ... ${NC}\n"
+            docker-compose start
+        fi
+	if [ $gerar == '5' ]; then
+            printf "${ORANGE}Parando todos containers ... ${NC}\n"
+            docker-compose stop
+        fi
+	if [ $gerar == '6' ]; then
+            printf "${ORANGE}Reiniciando todos containers ... ${NC}\n"
+            docker-compose restart
         fi
     fi
     echo ' '
