@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## v1.0.2
+
+_Released: 2017-11-23_
+
+-  Alterado modo de instalação do supervisor
+    - Alterado instalação do supervisor para usar apt-get
+    - Alterado execução do supervisord no arquivo de build.sh
+
+- Alterado shell de execução inicial
+    - Alterado nome da empresa mantenedora do projeto
+
+- Alterado getting started
+    - Incluido atualização do init.sh no getting started do projeto
+
+
 ## v1.0.1
 
 _Released: 2016-12-01_
