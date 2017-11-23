@@ -22,11 +22,13 @@ LIGHT_GRAY='\033[0;37m'
 WHITE='\033[1;37m'
 NC='\033[0m'
 
-# Head
+clear
+
+# Cabeçalho
 echo ' '
-printf "${GREEN}https://github.com/totalbr/docker-build-ecidade for the canonical source repository \n"
-printf "Copyright (c) TotalBR Tecnologia ME LTDA\n"
-printf "(http://www.tbrtecnologia.com.br)\n ${NC}"
+printf "${GREEN}https://github.com/facilitatech/docker-build-ecidade for the canonical source repository \n"
+printf "Facilita.tech 2017 (c)\n"
+printf "(https://facilita.tech) ${NC}"
 echo ' '
 
 if [ $(uname) == "Darwin" ]; then
@@ -37,24 +39,26 @@ fi
 echo ' '
 
 if [ $ENVIRONMENT == 'LINUX' ]; then
-
     if which figlet > /dev/null; then
         printf "${GREEN}"
-        figlet e-cidade
+        figlet ecidade
+	printf "${GREEN}facilita.tech \n${NC}"
     else
-        if which apt-get > /dev/null; then
-            apt-get install -y figlet > /dev/null;
-        fi
-        if which yum > /dev/null; then
-            yum install -y figlet > /dev/null;
-        fi
-        if which figlet > /dev/null; then
-            printf "${GREEN}"
-            figlet e-cidade
-        fi
+        apt-get install -y figlet
+        printf "${GREEN}"
+        figlet ecidade
+	printf "${GREEN}facilita.tech \n${NC}"
     fi
     echo ' '
     printf "${NC}"
+else
+	if which figlet > /dev/null; then
+		printf "${GREEN}"
+		figlet ecidade
+		printf "${GREEN}facilita.tech \n${NC}"
+	fi
+	printf "${NC}"
+echo ''
 fi
 
 # Arquivo de configuração com o caminho para download do e-cidade
