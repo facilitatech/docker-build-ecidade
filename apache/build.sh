@@ -333,44 +333,4 @@ if [ $disable == 0 ]; then
 fi
 
 printf "${ORANGE}Executando supervisord ... ${NC}\n"
-/usr/local/bin/supervisord -n -c /etc/supervisord.conf
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+supervisord -n -c /etc/supervisord.conf

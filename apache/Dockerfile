@@ -32,7 +32,8 @@ RUN apt-get install libreoffice-writer python-uno openjdk-6-jre -y
 RUN a2enmod rewrite
 
 # Install supervisor
-RUN easy_install supervisor && \
+RUN apt-get update && \
+    apt-get install -y supervisor && \
     mkdir -p /var/log/supervisor && \
     mkdir -p /var/run/sshd && \
     mkdir -p /var/run/supervisord
