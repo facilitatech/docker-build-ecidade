@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## v1.0.3
+
+_Released: 2018-02-05_
+
+- Ignorado composer.phar
+- Adicionado library var_dumper
+- Alterado pg_hba para aceitar qualquer conexão.
+
+
 ## v1.0.2
 
 _Released: 2017-11-23_
