@@ -91,6 +91,9 @@ if which pg_dump > /dev/null; then
     /usr/bin/psql -U postgres -c "CREATE DATABASE ecidade OWNER ecidade;"
     /usr/bin/psql -U postgres -c "ALTER USER postgres WITH ENCRYPTED PASSWORD '12345'"
 
+    # Liberando o acesso para qualquer interface
+    echo 'host all all 0.0.0.0/0 trust' >> /etc/postgresql/9.2/main/pg_hba.conf
+
     printf "${ORANGE}Stop no PostgreSQL ... ${NC}\n"
     /etc/init.d/postgresql restart
 fi
