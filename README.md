@@ -26,4 +26,5 @@ Iniciar novo build?            [ 3 ]
 Iniciar todos os Containers?   [ 4 ]
 Parar todos os containers?     [ 5 ]
 Reiniciar todos os containers? [ 6 ]
+Gerenciar stack swarm?         [ 7 ]
 ```
