@@ -97,7 +97,7 @@ fi
 # Docker
 if which docker > /dev/null; then
     printf "${ORANGE}DOCKER${NC}\n"
-    printf "${LIGHT_PURPLE}Gerar novos containers?${NC} ${WHITE}       [ ${PURPLE}1 ${WHITE}]${NC} \n${LIGHT_PURPLE}Remover todos containers?${NC} ${WHITE}     [ ${PURPLE}2 ${WHITE}]${NC} \n${LIGHT_PURPLE}Iniciar novo build?${NC} ${WHITE}           [ ${PURPLE}3 ${WHITE}]${NC}\n${LIGHT_PURPLE}Iniciar todos os Containers?${NC} ${WHITE}  [ ${PURPLE}4 ${WHITE}]${NC}\n${LIGHT_PURPLE}Parar todos os containers?${NC} ${WHITE}    [ ${PURPLE}5 ${WHITE}]${NC}\n${LIGHT_PURPLE}Reiniciar todos os containers?${NC} ${WHITE}[ ${PURPLE}6 ${WHITE}]${NC}\n"
+printf "${LIGHT_PURPLE}Gerar novos containers?${NC} ${WHITE}       [ ${PURPLE}1 ${WHITE}]${NC} \n${LIGHT_PURPLE}Remover todos containers?${NC} ${WHITE}     [ ${PURPLE}2 ${WHITE}]${NC} \n${LIGHT_PURPLE}Iniciar novo build?${NC} ${WHITE}           [ ${PURPLE}3 ${WHITE}]${NC}\n${LIGHT_PURPLE}Iniciar todos os Containers?${NC} ${WHITE}  [ ${PURPLE}4 ${WHITE}]${NC}\n${LIGHT_PURPLE}Parar todos os containers?${NC} ${WHITE}    [ ${PURPLE}5 ${WHITE}]${NC}\n${LIGHT_PURPLE}Reiniciar todos os containers?${NC} ${WHITE}[ ${PURPLE}6 ${WHITE}]${NC}\n${LIGHT_PURPLE}Gerenciar stack swarm?        ${NC} ${WHITE}[ ${PURPLE}7 ${WHITE}]${NC}\n"
     read gerar
 
     if [ -n "$gerar" ]; then
@@ -113,20 +113,75 @@ if which docker > /dev/null; then
             docker-compose rm
         fi
         if [ $gerar == '3' ]; then
-        	printf "${LIGHT_PURPLE}Efetuar build com cache?${NC} ${WHITE} [ ${PURPLE}yes ${WHITE}]: ${NC} "
-        	read cache
-        	
-        	printf "${ORANGE}Iniciando processo de build ... ${NC}\n"
-        	if [ -n "$cache" ]; then
-				if [ $cache == 'no' ]; then
-					docker-compose build --no-cache
-				fi
-				if [ $cache == 'yes' ]; then
-					docker-compose build
-				fi
-        	else
-        	    docker-compose build
-        	fi
+        	printf "${LIGHT_PURPLE}Build com swarm?${NC} ${WHITE} [ ${PURPLE}yes ${WHITE}]: ${NC} "
+            read swarmop
+            
+            if [ -n "$swarmop" ]; then
+                printf "${LIGHT_PURPLE}Efetuar build com cache?${NC} ${WHITE} [ ${PURPLE}yes ${WHITE}]: ${NC} "
+                read cache
+
+                printf "${ORANGE}Iniciando processo de build ... ${NC}\n"
+                if [ $swarmop == "yes" ]; then
+                    if [ -n "$cache" ]; then
+                        if [ $cache == 'no' ]; then
+                            docker-compose -f $(pwd)/docker-compose-swarm.yml build --no-cache
+                        fi
+                        if [ $cache == 'yes' ]; then
+                            docker-compose -f $(pwd)/docker-compose-swarm.yml build
+                        fi
+                    else 
+                        docker-compose -f $(pwd)/docker-compose-swarm.yml build
+                    fi
+                fi
+                if [ $swarmop == "no" ]; then
+                   if [ -n "$cache" ]; then
+                        if [ $cache == 'no' ]; then
+                            docker-compose build --no-cache
+                        fi
+                        if [ $cache == 'yes' ]; then
+                            docker-compose build
+                        fi
+                    else 
+                        docker-compose -f $(pwd)/docker-compose.yml build
+                    fi
+                fi                 
+            else 
+                printf "${LIGHT_PURPLE}Efetuar build com cache?${NC} ${WHITE} [ ${PURPLE}yes ${WHITE}]: ${NC} "
+                read cache
+
+                printf "${ORANGE}Iniciando processo de build ... ${NC}\n"
+                if [ -n "$cache" ]; then
+                    if [ $cache == 'no' ]; then
+                        docker-compose -f $(pwd)/docker-compose-swarm.yml build --no-cache
+                    fi
+                    if [ $cache == 'yes' ]; then
+                        docker-compose -f $(pwd)/docker-compose-swarm.yml build
+                    fi
+                else 
+                    docker-compose -f $(pwd)/docker-compose-swarm.yml build
+                fi                     
+            fi    
+
+
+
+    #     	printf "${ORANGE}Iniciando processo de build ... ${NC}\n"
+    #     	if [ -n "$cache" ]; then
+
+    #             if [ $cache == 'no' ]; then
+    #                 docker-compose -f $(pwd)/docker-compose-swarm.yml build --no-cache
+    #             fi
+    #             if [ $cache == 'yes' ]; then
+    #                 docker-compose -f $(pwd)/docker-compose-swarm.yml build
+    #             fi
+				# # if [ $cache == 'no' ]; then
+				# # 	docker-compose build --no-cache
+				# # fi
+				# # if [ $cache == 'yes' ]; then
+				# # 	docker-compose build
+				# # fi
+    #     	else
+    #     	    docker-compose -f $(pwd)/docker-compose-swarm.yml build
+    #     	fi
         fi
 	if [ $gerar == '4' ]; then
             printf "${ORANGE}Iniciando todos containers ... ${NC}\n"
@@ -140,6 +195,25 @@ if which docker > /dev/null; then
             printf "${ORANGE}Reiniciando todos containers ... ${NC}\n"
             docker-compose restart
         fi
+    fi
+    if [ $gerar == '7' ]; then
+        printf "${ORANGE}...... ${NC}${LIGHT_PURPLE}Deploy stack ? ${NC} ${WHITE}      [ ${PURPLE}1 ${WHITE}]${NC}\n${ORANGE}...... ${NC}${LIGHT_PURPLE}Remove stack ? ${NC}       ${WHITE}[${PURPLE} 2 ${WHITE}]${NC}\n"
+        read swarm
+
+        if [ -n "$swarm" ]; then
+            if [ -z "$( docker network ls | awk '{ print $2 }' | grep '^ecidade' )" ]; then
+                printf "${ORANGE}Creating networking.. ${NC}\n"
+                docker network create ecidade -d overlay
+            fi
+            if [ $swarm == '1' ]; then
+                docker stack deploy --compose-file docker-compose-swarm.yml ecidade
+            fi
+
+            if [ $swarm == '2' ]; then
+                docker stack rm ecidade
+            fi
+            printf "${ORANGE}Finish! ${NC}\n"
+        fi               
     fi
     echo ' '
 else
