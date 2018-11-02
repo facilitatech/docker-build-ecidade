@@ -161,27 +161,6 @@ printf "${LIGHT_PURPLE}Gerar novos containers?${NC} ${WHITE}       [ ${PURPLE}1 
                     docker-compose -f $(pwd)/docker-compose-swarm.yml build
                 fi                     
             fi    
-
-
-
-    #     	printf "${ORANGE}Iniciando processo de build ... ${NC}\n"
-    #     	if [ -n "$cache" ]; then
-
-    #             if [ $cache == 'no' ]; then
-    #                 docker-compose -f $(pwd)/docker-compose-swarm.yml build --no-cache
-    #             fi
-    #             if [ $cache == 'yes' ]; then
-    #                 docker-compose -f $(pwd)/docker-compose-swarm.yml build
-    #             fi
-				# # if [ $cache == 'no' ]; then
-				# # 	docker-compose build --no-cache
-				# # fi
-				# # if [ $cache == 'yes' ]; then
-				# # 	docker-compose build
-				# # fi
-    #     	else
-    #     	    docker-compose -f $(pwd)/docker-compose-swarm.yml build
-    #     	fi
         fi
 	if [ $gerar == '4' ]; then
             printf "${ORANGE}Iniciando todos containers ... ${NC}\n"
