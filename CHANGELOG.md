@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v1.4.0
+## v1.1.0
 
 _Released: 2019-01-08_
 
