@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-clear;
-
 # Colors
 GREEN='\033[0;32m'
 BLACK='\033[0;30m'
@@ -162,62 +160,39 @@ printf "${LIGHT_PURPLE}Gerar novos containers?${NC} ${WHITE}       [ ${PURPLE}1 
                 fi                     
             fi    
         fi
-	if [ $gerar == '4' ]; then
+		if [ $gerar == '4' ]; then
             printf "${ORANGE}Iniciando todos containers ... ${NC}\n"
             docker-compose start
         fi
-	if [ $gerar == '5' ]; then
+		if [ $gerar == '5' ]; then
             printf "${ORANGE}Parando todos containers ... ${NC}\n"
             docker-compose stop
         fi
-	if [ $gerar == '6' ]; then
+		if [ $gerar == '6' ]; then
             printf "${ORANGE}Reiniciando todos containers ... ${NC}\n"
             docker-compose restart
         fi
-    fi
-    if [ $gerar == '7' ]; then
-        printf "${ORANGE}...... ${NC}${LIGHT_PURPLE}Deploy stack ? ${NC} ${WHITE}      [ ${PURPLE}1 ${WHITE}]${NC}\n${ORANGE}...... ${NC}${LIGHT_PURPLE}Remove stack ? ${NC}       ${WHITE}[${PURPLE} 2 ${WHITE}]${NC}\n"
-        read swarm
-
-        if [ -n "$swarm" ]; then
-            if [ -z "$( docker network ls | awk '{ print $2 }' | grep '^ecidade' )" ]; then
-                printf "${ORANGE}Creating networking.. ${NC}\n"
-                docker network create ecidade -d overlay
-            fi
-            if [ $swarm == '1' ]; then
-                docker stack deploy --compose-file docker-compose-swarm.yml ecidade
-            fi
-
-            if [ $swarm == '2' ]; then
-                docker stack rm ecidade
-            fi
-            printf "${ORANGE}Finish! ${NC}\n"
-        fi               
+        if [ $gerar == '7' ]; then
+			printf "${ORANGE}...... ${NC}${LIGHT_PURPLE}Deploy stack ? ${NC} ${WHITE}      [ ${PURPLE}1 ${WHITE}]${NC}\n${ORANGE}...... ${NC}${LIGHT_PURPLE}Remove stack ? ${NC}       ${WHITE}[${PURPLE} 2 ${WHITE}]${NC}\n"
+			read swarm
+	
+			if [ -n "$swarm" ]; then
+				if [ -z "$( docker network ls | awk '{ print $2 }' | grep '^ecidade' )" ]; then
+					printf "${ORANGE}Creating networking.. ${NC}\n"
+					docker network create ecidade -d overlay
+				fi
+				if [ $swarm == '1' ]; then
+					docker stack deploy --compose-file docker-compose-swarm.yml ecidade
+				fi
+	
+				if [ $swarm == '2' ]; then
+					docker stack rm ecidade
+				fi
+				printf "${ORANGE}Finish! ${NC}\n"
+			fi               
+		fi
     fi
     echo ' '
 else
     printf "${BLUE}Instalação do docker não encontrada${NC}\n"
 fi
-
-# mkdocs
-if which pip3 > /dev/null; then
-    if which mkdocs > /dev/null; then
-        printf "${ORANGE}MKDOCS${NC}\n"
-        printf "${LIGHT_PURPLE}Deseja executar o webserver mkdocs?:${NC} ${WHITE}[ ${PURPLE}y or n ${WHITE}]${NC}\n"
-        read mkdocs
-
-        if [ -n "$mkdocs" ]; then
-            if [ $mkdocs == 'y' ]; then
-                printf "${ORANGE}Iniciando webserver mkdocs ... ${NC}\n"
-                mkdocs serve
-            fi
-        fi
-        echo ' '
-    else
-        printf "${BLUE}Instalação mkdocs não encontrada${NC}\n"
-    fi
-else
-    printf "${BLUE}Instalação do pip não encontrada${NC}\n"
-    printf "${BLUE}Encontre mais detalhes em: https://pip.pypa.io/en/stable/installing/ ${NC}\n"
-fi
-
