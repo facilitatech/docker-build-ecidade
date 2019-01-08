@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v1.4.0
+
+_Released: 2019-01-08_
+
+- Criado build e execução com swarm
+
+
 ## v1.0.3
 
 _Released: 2018-02-05_
