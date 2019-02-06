@@ -6,6 +6,6 @@ services:
     container_name: ecidade_apache
     build: ./php56
     volumes:
-     - ./:/var/www
+     - ./:/var/www/html
     ports:
      - "80:80"
