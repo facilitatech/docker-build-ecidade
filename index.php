@@ -1,3 +1,3 @@
 <?php
 
-header('Location: e-cidade');
+header('Location: ecidade');
