@@ -22,6 +22,12 @@ RUN sed -i "s/memory_limit = 128M/memory_limit = 512M/" /etc/php/5.6/fpm/php.ini
 RUN sed -i "s/max_execution_time = 30/max_execution_time = 180/" /etc/php/5.6/fpm/php.ini 
 RUN sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php/5.6/cli/php.ini
 
+RUN sed -i '151s/UMASK/ /g' /etc/login.defs
+RUN sed -i '151s/022/ /g' /etc/login.defs
+RUN sed -i '151a UMASK 002' /etc/login.defs
+
+RUN echo 'umask 002' >> /etc/apache2/envvars
+
 # Install supervisor
 RUN apt-get update && \
     apt-get install -y supervisor && \
