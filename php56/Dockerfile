@@ -37,6 +37,8 @@ RUN apt-get update && \
 ADD apache/apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 COPY apache/supervisord.conf /etc/supervisord.conf
 
+RUN cp /etc/localtime /root/old.timezone && rm -f /etc/localtime && ln -s /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
+
 EXPOSE 80
 
 CMD ["/usr/bin/supervisord", "-n"]
