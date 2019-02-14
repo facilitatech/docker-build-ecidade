@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## v1.2.0
+
+_Released: 2019-02-14_
+
+### Melhorias
+
+- Criado nova estrutura para o funcionamento do ecidade com php56
+
+
+#
+
+- [d4a15b7](https://github.com/facilitatech/docker-build-ecidade/commit/d4a15b7) **Incluido configuração para timezone SaoPaulo**
+- [0851317](https://github.com/facilitatech/docker-build-ecidade/commit/0851317) **Incluído novas configurações de permissões**
+- [9d3be48](https://github.com/facilitatech/docker-build-ecidade/commit/9d3be48) **Alterado configuração do apache em virtualhost**
+- [3736795](https://github.com/facilitatech/docker-build-ecidade/commit/3736795) **Alterado o nome da pasta para redirecionamento**
+- [1da3404](https://github.com/facilitatech/docker-build-ecidade/commit/1da3404) **Criado direcionador para diretório ecidade**
+- [ff2cb50](https://github.com/facilitatech/docker-build-ecidade/commit/ff2cb50) **Alterado diretório de inicialização do container**
+- [d70db58](https://github.com/facilitatech/docker-build-ecidade/commit/d70db58) **Incluido estrutura para versão php56**
+
+
 ## v1.1.0
 
 _Released: 2019-01-08_
