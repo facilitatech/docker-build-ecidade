@@ -109,18 +109,7 @@ EOF
 	else
 		printf "${ORANGE}Arquivo /etc/apache2/conf-available/charset.conf já alterado para a opção AddDefaultCharset ... ${NC}\n"
 	fi
-
-	# Diretórios necessários para o e-cidade, gravação de arquivos gerados pelo sistema
-	# dando permissão para escrita na pasta
-	if [ -d "/var/www/tmp" ]; then
-		printf "${ORANGE}Diretório /var/www/tmp não existe ... ${NC}\n"
-	else
-		printf "${ORANGE}Criando diretório /var/www/tmp ... ${NC}\n"
-		mkdir -p /var/www/tmp
-		chown -R www-data.www-data /var/www/tmp
-		chmod -R 777 /var/www/tmp
-	fi
-
+	
 	# Ativando o modo rewrite para que o virtual host e o e-cidade funcione corretamente
 	sudo a2enmod rewrite
 	/etc/init.d/apache2 restart
@@ -307,29 +296,6 @@ if [ -z "$( cat /etc/login.defs | grep '#CHANGEFORTOTALBR' )" ]; then
 	sed -i '152a #CHANGEFORTOTALBR' /etc/login.defs
 else
 	printf "${ORANGE}Arquivo /etc/login.defs já alterado para a opção UMASK 002 ... ${NC}\n"
-fi
-
-# Efetuando o download dos fontes do e-cidade
-source /config.sh
-
-if [ $disable == 0 ]; then
-	if [[ ($sourcecode != 0 && $sourcecode != "") ]]; then
-		mkdir -p ./ecidade
-		wget $sourcecode -P ./ecidade > /dev/null;
-		tar xjvf ./ecidade/e-cidade-$versao-linux.completo.tar.bz2 -C ./ecidade
-		cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidade /var/www
-		cp -r ./ecidade/e-cidade-$versao-linux.completo/e-cidadeonline /var/www
-	
-		mkdir -p /var/www/e-cidade/tmp
-		chmod 777 /var/www/e-cidade/tmp -R
-
-    		if [ -d "./ecidade" ]; then
-        		rm -rf ./ecidade
-    		fi
-	else
-		printf "${BLUE}Configure o arquivo config.sh com os caminhos dos fontes e base do e-cidade para download${NC}\n"
-   		 exit 2;
-	fi
 fi
 
 printf "${ORANGE}Executando supervisord ... ${NC}\n"
