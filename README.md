@@ -6,7 +6,7 @@ git clone https://github.com/facilitatech/docker-build-ecidade.git
 
 Executar o arquivo `init.sh` para fazer a configuração inicial para efetuar
 o build e subir os containers, após finalizar a marcação das configurações
-necessarias como do versão PHP e PostgreSQL, será visualizado uma mensagem
+necessárias como versão do PHP e PostgreSQL, será visualizado uma mensagem
 indicando o tipo de instalação que as imagens e os containers usaram
 
 ```bash
