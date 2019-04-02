@@ -1,0 +1,29 @@
+version: '3.6'
+
+services:
+  postgresql:
+    image: ecidade_postgresql95
+    container_name: ecidade_postgresql95
+    build: ./postgresql/9.5
+    volumes:
+     - ./:/var/www
+    ports:
+     - "5433:5432"
+    networks:
+     - ecidade
+
+  apache:
+    image: ecidade_php53
+    container_name: ecidade_php53
+    build: ./php/5.3
+    volumes:
+     - ./:/var/www
+    ports:
+     - "8080:80"
+    networks:
+     - ecidade 
+
+networks:
+  ecidade:
+    external:
+      name: ecidade
