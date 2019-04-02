@@ -25,7 +25,7 @@ clear
 # Cabeçalho
 echo ' '
 printf "${GREEN}https://github.com/facilitatech/docker-build-ecidade for the canonical source repository \n"
-printf "Facilita.tech 2017 (c)\n"
+printf "Facilita.tech 2017-2019 (c)\n"
 printf "(https://facilita.tech) ${NC}"
 echo ' '
 
@@ -59,140 +59,216 @@ else
 echo ''
 fi
 
-# Arquivo de configuração com o caminho para download do e-cidade
-source config.sh;
-
-if [ $disable == 0 ]; then
-	if [[ ($database == 0) && ($sourcecode == 0 || $sourcecode == "") ]]; then
-    		printf "${BLUE}Configure o arquivo config.sh com os caminhos dos fontes e base do e-cidade para download${NC}\n"
-    		exit 2;
-	fi
-fi
-
-# Copiando os arquivos para os diretórios onde será feito o build de cada container
-cp config.sh postgresql
-cp config.sh apache
-
 if ! which docker-compose > /dev/null; then
     printf "${BLUE}Instalação do docker-compose não encontrada${NC}\n"
     printf "${BLUE}Encontre mais detalhes em: https://docs.docker.com/compose/install/ ${NC}\n"
     exit 2
 fi
 
-# Limpando os arquivos da ultima instalação
-if [ -f "./e-cidade-$versao.sql" ]; then
-    rm -rf ./e-cidade-$versao.sql
+config=false
+versaophp=""
+versaopostgresql=""
+environment="dev"
+tipoinstalacao="php"
+
+# Configuração inicial de ambiente, opção de PHP: 5.3, 5.6, PostgreSQL: 9.2, 9.5
+# Ambiente de dev, prod, containers de PHP e PostgreSQL ao mesmo tempo ou somente de PHP
+if [ -f "./.config" ]; then
+	config=true	
+	source ./.config
+	
+	printf "${ORANGE}Configuração: ${NC}\n"	
+	printf "${PURPLE}Instalação $tipoinstalacao ${NC}\n"	
+	echo ' '
+
+else
+	clear
+	echo ' '
+	printf "${ORANGE}Configuração inicial ... ${NC}\n"	
+	printf "${ORANGE}Versão do PHP: ${NC}\n"
+	printf "${LIGHT_PURPLE}5.3${NC} ${WHITE} [ ${PURPLE}1 ${WHITE}]${NC}\n"	
+	printf "${LIGHT_PURPLE}5.6${NC} ${WHITE} [ ${PURPLE}2 ${WHITE}]${NC}\n"	
+	read readversaophp
+	
+	if [ -n "$readversaophp" ]; then
+		versaophpActive=false
+		if [ $readversaophp == '1' ]; then
+			versaophp="53"
+			versaophpActive=true
+        fi	
+		if [ $readversaophp == '2' ]; then
+			versaophp="56"
+			versaophpActive=true
+        fi	
+
+		if [ $versaophpActive == true ]; then
+			clear
+			echo ' '	
+			printf "${ORANGE}Versão do PostgreSQL: ${NC}\n"
+			printf "${LIGHT_PURPLE}9.2${NC} ${WHITE} [ ${PURPLE}1 ${WHITE}]${NC}\n"	
+			printf "${LIGHT_PURPLE}9.5${NC} ${WHITE} [ ${PURPLE}2 ${WHITE}]${NC}\n"	
+			read readversaopostgresql
+		
+			if [ -n "$readversaopostgresql" ]; then
+				versaopostgresqlActive=false
+			
+				if [ $readversaopostgresql == '1' ]; then
+					versaopostgresql="92"
+					versaopostgresqlActive=true
+        		fi	
+				if [ $readversaopostgresql == '2' ]; then
+					versaopostgresql="95"
+					versaopostgresqlActive=true
+        		fi			
+
+				if [ $versaopostgresqlActive == true ]; then
+					clear
+					echo ' '
+					printf "${ORANGE}Tipo da instalação: ${NC}\n"
+					printf "${LIGHT_PURPLE}Container de PHP e PostgreSQL${NC} ${WHITE} [ ${PURPLE}1 ${WHITE}]${NC}\n"	
+					printf "${LIGHT_PURPLE}Container de PHP${NC} ${WHITE} [ ${PURPLE}2 ${WHITE}]${NC}\n"	
+					read readtipoinstalacao
+					
+					if [ -n "$readtipoinstalacao" ]; then
+						tipoinstalacaoActive=false
+			
+						if [ $readtipoinstalacao == '1' ]; then
+							tipoinstalacao="php${versaophp}-postgresql${versaopostgresql}"
+							tipoinstalacaoActive=true
+        				fi	
+
+						if [ $readtipoinstalacao == '2' ]; then
+							tipoinstalacao="php${versaophp}"
+							tipoinstalacaoActive=true
+        				fi						
+						
+						if [ $tipoinstalacaoActive == true ]; then
+							clear
+							echo ' '
+							printf "${ORANGE}Ambiente: ${NC}\n"
+							printf "${LIGHT_PURPLE}Prod${NC} ${WHITE} [ ${PURPLE}1 ${WHITE}]${NC}\n"	
+							printf "${LIGHT_PURPLE}Dev${NC} ${WHITE}  [ ${PURPLE}2 ${WHITE}]${NC}\n"	
+							read readenvironment
+								
+							if [ -n "$readenvironment" ]; then
+								environmentActive=false
+			
+								if [ $readenvironment == '1' ]; then
+									environment="prod"
+									environmentActive=true
+        						fi
+
+								if [ $readenvironment == '2' ]; then
+									environment="dev"
+									environmentActive=true
+        						fi
+						
+								if [ $environmentActive == true ]; then
+cat << EOF > ./.config
+versaophp="${versaophp}"
+versaopostgresql="${versaopostgresql}"
+tipoinstalacao="${tipoinstalacao}-${environment}"
+environment="${environment}"
+EOF
+
+									clear
+									source init.sh
+								else
+									exit 2
+								fi
+							else
+								exit 2
+							fi		
+						else
+							exit 2
+						fi
+					else
+						exit 2
+					fi
+				else
+					exit 2
+				fi	
+			else
+				exit 2
+			fi
+		else
+			exit 2
+		fi
+	else
+		exit 2
+	fi
 fi
 
-if [ -d "./e-cidade" ]; then
-    rm -rf ./e-cidade
-fi
+if [ $config == false ]; then
+	exit 2
+fi	
 
-if [ -d "./e-cidadeonline" ]; then
-    rm -rf ./e-cidadeonline
-fi
 
 # Docker
 if which docker > /dev/null; then
     printf "${ORANGE}DOCKER${NC}\n"
-printf "${LIGHT_PURPLE}Gerar novos containers?${NC} ${WHITE}       [ ${PURPLE}1 ${WHITE}]${NC} \n${LIGHT_PURPLE}Remover todos containers?${NC} ${WHITE}     [ ${PURPLE}2 ${WHITE}]${NC} \n${LIGHT_PURPLE}Iniciar novo build?${NC} ${WHITE}           [ ${PURPLE}3 ${WHITE}]${NC}\n${LIGHT_PURPLE}Iniciar todos os Containers?${NC} ${WHITE}  [ ${PURPLE}4 ${WHITE}]${NC}\n${LIGHT_PURPLE}Parar todos os containers?${NC} ${WHITE}    [ ${PURPLE}5 ${WHITE}]${NC}\n${LIGHT_PURPLE}Reiniciar todos os containers?${NC} ${WHITE}[ ${PURPLE}6 ${WHITE}]${NC}\n${LIGHT_PURPLE}Gerenciar stack swarm?        ${NC} ${WHITE}[ ${PURPLE}7 ${WHITE}]${NC}\n"
+    printf "${LIGHT_PURPLE}Generate new containers ?${NC} ${WHITE}[ ${PURPLE}1 ${WHITE}]${NC} \n${LIGHT_PURPLE}Start new build ?${NC} ${WHITE}        [ ${PURPLE}2 ${WHITE}]${NC}\n${LIGHT_PURPLE}Remove all containers?${NC}    ${WHITE}[ ${PURPLE}3 ${WHITE}] \n${NC}${LIGHT_PURPLE}Reset configuration?${NC}      ${WHITE}[ ${PURPLE}4 ${WHITE}]${NC}\n"
     read gerar
 
     if [ -n "$gerar" ]; then
-        if [ $gerar == '1' ]; then
-            printf "${ORANGE}Gerando novos containers ... ${NC}\n"
-            docker-compose ps
-            docker-compose up -d
-            docker-compose ps
-        fi
-        if [ $gerar == '2' ]; then
-            printf "${ORANGE}Removendo todos containers ... ${NC}\n"
-            docker-compose kill
-            docker-compose rm
-        fi
-        if [ $gerar == '3' ]; then
-        	printf "${LIGHT_PURPLE}Build com swarm?${NC} ${WHITE} [ ${PURPLE}yes ${WHITE}]: ${NC} "
-            read swarmop
-            
-            if [ -n "$swarmop" ]; then
-                printf "${LIGHT_PURPLE}Efetuar build com cache?${NC} ${WHITE} [ ${PURPLE}yes ${WHITE}]: ${NC} "
-                read cache
 
-                printf "${ORANGE}Iniciando processo de build ... ${NC}\n"
-                if [ $swarmop == "yes" ]; then
-                    if [ -n "$cache" ]; then
-                        if [ $cache == 'no' ]; then
-                            docker-compose -f $(pwd)/docker-compose-swarm.yml build --no-cache
-                        fi
-                        if [ $cache == 'yes' ]; then
-                            docker-compose -f $(pwd)/docker-compose-swarm.yml build
-                        fi
-                    else 
-                        docker-compose -f $(pwd)/docker-compose-swarm.yml build
+	if [ $gerar == '1' ]; then
+        	printf "${ORANGE}...... ${NC}${LIGHT_PURPLE}Deploy stack ? ${NC} ${WHITE}      [ ${PURPLE}1 ${WHITE}]${NC}\n${ORANGE}...... ${NC}${LIGHT_PURPLE}Remove stack ? ${NC}       ${WHITE}[${PURPLE} 2 ${WHITE}]${NC}\n"
+                read swarm
+
+                if [ -n "$swarm" ]; then
+					if [ -z "$( docker network ls | awk '{ print $2 }' | grep '^ecidade' )" ]; then
+                    	printf "${ORANGE}Creating networking.. ${NC}\n"
+                    	docker network create ecidade -d overlay
+                	fi
+
+                    if [ $swarm == '1' ]; then
+                        docker stack deploy --compose-file docker-compose-${tipoinstalacao}.yml ecidade
                     fi
+
+                    if [ $swarm == '2' ]; then
+                        docker stack rm ecidade
+                    fi
+
+                    printf "${ORANGE}Finish! ${NC}\n"
+				else
+					exit 2
                 fi
-                if [ $swarmop == "no" ]; then
-                   if [ -n "$cache" ]; then
-                        if [ $cache == 'no' ]; then
-                            docker-compose build --no-cache
-                        fi
-                        if [ $cache == 'yes' ]; then
-                            docker-compose build
-                        fi
-                    else 
-                        docker-compose -f $(pwd)/docker-compose.yml build
-                    fi
-                fi                 
-            else 
-                printf "${LIGHT_PURPLE}Efetuar build com cache?${NC} ${WHITE} [ ${PURPLE}yes ${WHITE}]: ${NC} "
-                read cache
+        fi
 
-                printf "${ORANGE}Iniciando processo de build ... ${NC}\n"
-                if [ -n "$cache" ]; then
-                    if [ $cache == 'no' ]; then
-                        docker-compose -f $(pwd)/docker-compose-swarm.yml build --no-cache
-                    fi
-                    if [ $cache == 'yes' ]; then
-                        docker-compose -f $(pwd)/docker-compose-swarm.yml build
-                    fi
-                else 
-                    docker-compose -f $(pwd)/docker-compose-swarm.yml build
-                fi                     
-            fi    
+        if [ $gerar == '2' ]; then
+        	printf "${LIGHT_PURPLE}Would you like to start a new compilation with cache?${NC} ${WHITE} [ ${PURPLE}yes ${WHITE}]: ${NC} "
+        	read cache
+
+        	printf "${ORANGE}Starting a new build process ... ${NC}\n"
+        	if [ -n "$cache" ]; then
+			if [ $cache == 'no' ]; then
+				docker-compose -f $(pwd)/docker-compose-${tipoinstalacao}.yml build --no-cache
+			fi
+			if [ $cache == 'yes' ]; then
+				docker-compose -f $(pwd)/docker-compose-${tipoinstalacao}.yml build
+			fi
+        	else
+        	    docker-compose -f $(pwd)/docker-compose-${tipoinstalacao}.yml build
+        	fi
+            printf "${ORANGE}Finish! ${NC}\n"
         fi
-		if [ $gerar == '4' ]; then
-            printf "${ORANGE}Iniciando todos containers ... ${NC}\n"
-            docker-compose start
-        fi
-		if [ $gerar == '5' ]; then
-            printf "${ORANGE}Parando todos containers ... ${NC}\n"
-            docker-compose stop
-        fi
-		if [ $gerar == '6' ]; then
-            printf "${ORANGE}Reiniciando todos containers ... ${NC}\n"
-            docker-compose restart
-        fi
-        if [ $gerar == '7' ]; then
-			printf "${ORANGE}...... ${NC}${LIGHT_PURPLE}Deploy stack ? ${NC} ${WHITE}      [ ${PURPLE}1 ${WHITE}]${NC}\n${ORANGE}...... ${NC}${LIGHT_PURPLE}Remove stack ? ${NC}       ${WHITE}[${PURPLE} 2 ${WHITE}]${NC}\n"
-			read swarm
-	
-			if [ -n "$swarm" ]; then
-				if [ -z "$( docker network ls | awk '{ print $2 }' | grep '^ecidade' )" ]; then
-					printf "${ORANGE}Creating networking.. ${NC}\n"
-					docker network create ecidade -d overlay
-				fi
-				if [ $swarm == '1' ]; then
-					docker stack deploy --compose-file docker-compose-swarm.yml ecidade
-				fi
-	
-				if [ $swarm == '2' ]; then
-					docker stack rm ecidade
-				fi
-				printf "${ORANGE}Finish! ${NC}\n"
-			fi               
+
+		if [ $gerar == '3' ]; then
+			docker stack rm ecidade	
 		fi
+
+		if [ $gerar == '4' ]; then
+			rm -rf .config
+			clear
+			source ./init.sh
+		fi
+
+	else
+		exit 2
     fi
     echo ' '
 else
-    printf "${BLUE}Instalação do docker não encontrada${NC}\n"
+    printf "${BLUE}Installation of docker not found${NC}\n"
 fi
+
