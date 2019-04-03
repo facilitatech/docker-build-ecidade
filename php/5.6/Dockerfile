@@ -3,7 +3,7 @@ FROM ubuntu:xenial
 MAINTAINER Flávio Henrique <fashenrique@gmail.com>
 
 RUN apt-get update && apt-get upgrade -y \
-	&& apt-get install -y lsb-base python-software-properties python-setuptools libc6 libdebconfclient0 original-awk libbz2-1.0 liblzma5 libselinux1 zlib1g tar dash libtinfo5 bzip2 vim software-properties-common wget
+	&& apt-get install -y lsb-base python-software-properties python-setuptools libc6 libdebconfclient0 original-awk libbz2-1.0 liblzma5 libselinux1 zlib1g tar dash libtinfo5 bzip2 vim software-properties-common wget git
 
 COPY apache/ondrej-php-xenial.list /etc/apt/sources.list.d/ondrej-php-xenial.list
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
