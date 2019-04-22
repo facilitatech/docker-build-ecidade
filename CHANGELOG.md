@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## v1.3.0
+
+_Released: 2019-04-22_
+
+### Melhorias
+
+- Alterado estrutura de pastas
+- Criado nova opção para configuração de ambiente, PHP 5.3 ou 5.6, PostgreSQL 9.2 ou 9.5 onde pode ser escolhido como
+será feito o build e inicialização dos containers
+
+
+### Removido
+
+- Removido arquivos de configuração não mais usados como arquivos shell
+
+
+#
+
+- [9e4a138](https://github.com/facilitatech/docker-build-ecidade/commit/9e4a138) **Incluido instalação do git para o build**
+- [fd2b906](https://github.com/facilitatech/docker-build-ecidade/commit/fd2b906) **Incluido arquivo para carregamento inicial**
+- [0ad5de7](https://github.com/facilitatech/docker-build-ecidade/commit/0ad5de7) **Alteração na concordância de texto no README**
+- [2515306](https://github.com/facilitatech/docker-build-ecidade/commit/2515306) **Alterado instrução inicial no README**
+- [2ed5bad](https://github.com/facilitatech/docker-build-ecidade/commit/2ed5bad) **Removido estrutura antiga e criado novo menu**
+- [a607cac](https://github.com/facilitatech/docker-build-ecidade/commit/a607cac) **Criado vários arquivos docker-compose**
+- [56cb047](https://github.com/facilitatech/docker-build-ecidade/commit/56cb047) **Alterado estrutura das pastas**
+- [68149a7](https://github.com/facilitatech/docker-build-ecidade/commit/68149a7) **Removido arquivos de configuração não mais usados**
+- [43e2eb0](https://github.com/facilitatech/docker-build-ecidade/commit/43e2eb0) **Ignorado arquivos para o não envio ao repositório**
+
+
 ## v1.2.0
 
 _Released: 2019-02-14_
